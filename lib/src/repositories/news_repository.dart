@@ -8,13 +8,22 @@ import '../utils/api_reference.dart';
 import 'home_repository.dart';
 
 class NewsRepository extends HomeRepository<News> {
+
+
+
   Future<List<News>> fetch([int index, int fetch]) async {
+
+     
     await super.initialBox();
+
+
+   //! check the connection 
     if (await connectionChecker.hasConnection) {
       Response response = await client.get(
         ApiReference.home(index ?? 0, fetch ?? 50),
       );
 
+      //! return cached in case of != 200
       if (response.statusCode != 200 && box.isNotEmpty)
         return box.values.toList();
 
@@ -24,6 +33,8 @@ class NewsRepository extends HomeRepository<News> {
         list.length,
         (index) => News.fromJson(list[index]),
       );
+
+
       if (newsList.length > box.values.length) {
         for (int i = 0; i < newsList.length; i++) {
           if (i < box.values.length) {
